@@ -1,18 +1,13 @@
 package utils;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Matrix {
 
     public enum Direction {
-        TopLeft,
-        Top,
-        TopRight,
-        Right,
-        BottomRight,
-        Bottom,
-        BottomLeft,
-        Left
+        TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left
     }
 
     private String[][] matrix;
@@ -20,92 +15,65 @@ public class Matrix {
     public Matrix(int width, int height) {
         matrix = new String[width][height];
         for (int x = 0; x < width; x++) {
-            for (int y=0; y<height; y++) {
+            for (int y = 0; y < height; y++) {
                 matrix[x][y] = " ";
             }
         }
     }
 
     public static Matrix fromLines(List<String> lines) {
-        Matrix matrix = new Matrix(lines.getFirst().length(), lines.size());
-        int posY = 0;
-        for (String line: lines) {
-            posY++;
-            for (int posX = 0; posX < line.length(); posX++) {
-                matrix.put(posX + 1, posY, line.charAt(posX));
-            }
-        }
+        var matrix = new Matrix(lines.get(0).length(), lines.size());
+        for (int y = 0; y < lines.size(); y++) {
+            for (int x = 0; x < lines.get(y).length(); x++) {
+                matrix.put(x + 1, y + 1, lines.get(y).charAt(x));
+        }}
         return matrix;
     }
 
     public void addMatrixRow() {
-        Matrix newMatrix = new Matrix(this.getWidth(), this.getHeight()+1);
-        for (int x=1; x<this.getWidth()+1; x++) {
-            for (int y=1; y<this.getHeight()+1; y++) {
-                newMatrix.put(x, y, this.get(x, y));
-            }
-        }
-        this.matrix = newMatrix.matrix;
+        var newMatrix = new Matrix(getWidth(), getHeight() + 1);
+        for (int x = 1; x <= getWidth(); x++) {
+            for (int y = 1; y <= getHeight(); y++) {
+                newMatrix.put(x, y, get(x, y));
+        }}
+        matrix = newMatrix.matrix;
     }
 
     public boolean isEmptyRow(int y) {
-        boolean isEmpty = true;
-        for (int x=1; x<this.getWidth()+1; x++) {
-            if (!this.get(x,y).equals(" ")) {
-                isEmpty = false;
-            }
-        }
-        return isEmpty;
+        return IntStream.range(1, getWidth() + 1).allMatch(x -> " ".equals(get(x, y)));
     }
 
     public void clear(int x, int y) {
-        this.put(x, y, " ");
+        put(x, y, " ");
     }
 
     public void print() {
-        boolean foundFirstNonEmptyRow = false;
         System.out.println("\nMatrix:");
-        for (int y = this.getHeight(); y > 0; y--) {
-            for (int x=1; x<this.getWidth()+1; x++) {
-                if (!isEmptyRow(y)) {
-                    foundFirstNonEmptyRow = true;
-                }
-                if (foundFirstNonEmptyRow) {
-                    System.out.print("[" + this.get(x, y) + "] ");
-                }
-            }
-            if (foundFirstNonEmptyRow) {
-                System.out.println();
-            }
-        }
-        System.out.println();
-    }
+        for (int y = getHeight(); y > 0; y--) {
+            var yPos = y;
+            if (!isEmptyRow(y)) {
+                System.out.println(IntStream.range(1, getWidth() + 1)
+                        .mapToObj(x -> "[" + get(x, yPos) + "] ")
+                        .collect(Collectors.joining()));
+    }}}
+
 
     public void move(int fromX, int fromY, int toX, int toY) {
-        String fromValue = this.get(fromX, fromY);
-        this.put(toX, toY, fromValue);
-        this.clear(fromX, fromY);
+        put(toX, toY, get(fromX, fromY));
+        clear(fromX, fromY);
     }
 
     public void put(int x, int y, char value) {
-        put(x, y, "" + value);
+        put(x, y, String.valueOf(value));
     }
 
     public void put(int x, int y, String value) {
-        if (y>getHeight()) {
-            for (int i=0; i<y; i++) {
-                this.addMatrixRow();
-            }
-        }
-        matrix[x-1][y-1] = value;
+        while (y > getHeight()) addMatrixRow();
+        matrix[x - 1][y - 1] = value;
     }
 
     public String get(int x, int y) {
-        return matrix[x-1][y-1];
-    }
-
-    public int getInt(int x, int y) {
-        return Integer.parseInt(matrix[x-1][y-1]);
+        return matrix[x - 1][y - 1];
     }
 
     public int getWidth() {
@@ -116,49 +84,33 @@ public class Matrix {
         return matrix[0].length;
     }
 
-    public String getTopLeft(int x, int y, int steps) {
-        return this.get(x-steps, y+steps);
-    }
-
-    public String getTop(int x, int y, int steps) {
-        return this.get(x, y+steps);
-    }
-
-    public String getTopRight(int x, int y, int steps) {
-        return this.get(x+steps, y+steps);
-    }
-
-    public String getRight(int x, int y, int steps) {
-        return this.get(x+steps, y);
-    }
-
-    public String getBottomRight(int x, int y, int steps) {
-        return this.get(x+steps, y-steps);
-    }
-
-    public String getBottom(int x, int y, int steps) {
-        return this.get(x, y-steps);
-    }
-
-    public String getBottomLeft(int x, int y, int steps) {
-        return this.get(x-steps, y-steps);
-    }
-
-    public String getLeft(int x, int y, int steps) {
-        return this.get(x-steps, y);
-    }
-
     public String getValueInDirection(int x, int y, Direction direction, int steps) {
         return switch (direction) {
-            case TopLeft -> getTopLeft(x, y, steps);
-            case Top -> getTop(x, y, steps);
-            case TopRight -> getTopRight(x, y, steps);
-            case Right -> getRight(x, y, steps);
-            case BottomRight -> getBottomRight(x, y, steps);
-            case Bottom -> getBottom(x, y, steps);
-            case BottomLeft -> getBottomLeft(x, y, steps);
-            case Left -> getLeft(x, y, steps);
+            case TopLeft -> get(x - steps, y + steps);
+            case Top -> get(x, y + steps);
+            case TopRight -> get(x + steps, y + steps);
+            case Right -> get(x + steps, y);
+            case BottomRight -> get(x + steps, y - steps);
+            case Bottom -> get(x, y - steps);
+            case BottomLeft -> get(x - steps, y - steps);
+            case Left -> get(x - steps, y);
         };
+    }
+
+    public String getTopLeft(int x, int y) {
+        return this.getValueInDirection(x, y, Direction.TopLeft, 1);
+    }
+
+    public String getTopRight(int x, int y) {
+        return this.getValueInDirection(x, y, Direction.TopRight, 1);
+    }
+
+    public String getBottomLeft(int x, int y) {
+        return this.getValueInDirection( x, y, Direction.BottomLeft, 1);
+    }
+
+    public String getBottomRight(int x, int y) {
+        return this.getValueInDirection(x, y, Direction.BottomRight, 1);
     }
 
 }
