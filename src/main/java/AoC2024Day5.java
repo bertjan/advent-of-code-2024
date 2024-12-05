@@ -9,8 +9,8 @@ void main() throws Exception {
             while (!isValidSeq(seq, rules)) { for (String rule: rules) {
                 var parts = Arrays.stream(rule.split("\\|")).map(Long::valueOf).toArray(Long[]::new);
                 if (seq.contains(parts[0]) && seq.contains(parts[1])) {
-                    int index0 = seq.indexOf(parts[0]); int index1 = seq.indexOf(parts[1]);
-                    if (index0 > index1) { seq.set(index0, parts[1]); seq.set(index1, parts[0]); }
+                    int[] index = { seq.indexOf(parts[0]), seq.indexOf(parts[1]) };
+                    if (index[0] > index[1]) { seq.set(index[0], parts[1]); seq.set(index[1], parts[0]); }
             }}}
             result2 += seq.get((seq.size()-1)/2);
     }}
