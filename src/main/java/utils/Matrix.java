@@ -10,6 +10,14 @@ public class Matrix {
         TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left
     }
 
+    public Matrix getCopy() {
+        String[][] newMatrix = new String[getWidth()][getHeight()];
+        for (int x = 0; x < getWidth(); x++) {
+            newMatrix[x] = matrix[x].clone();
+        }
+        return new Matrix(newMatrix);
+    }
+
     private String[][] matrix;
 
     public Matrix(int width, int height) {
@@ -19,6 +27,10 @@ public class Matrix {
                 matrix[x][y] = " ";
             }
         }
+    }
+
+    public Matrix(String[][] newMatrix) {
+        this.matrix = newMatrix;
     }
 
     public static Matrix fromLines(List<String> lines) {
@@ -53,7 +65,7 @@ public class Matrix {
             var yPos = y;
             if (!isEmptyRow(y)) {
                 System.out.println(IntStream.range(1, getWidth() + 1)
-                        .mapToObj(x -> "[" + get(x, yPos) + "] ")
+                        .mapToObj(x -> get(x, yPos))
                         .collect(Collectors.joining()));
     }}}
 
