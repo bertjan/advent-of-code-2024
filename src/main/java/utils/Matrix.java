@@ -1,10 +1,13 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Matrix {
+
+    public record Position(int x, int y) {};
 
     public enum Direction {
         TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left
@@ -123,6 +126,16 @@ public class Matrix {
 
     public String getBottomRight(int x, int y) {
         return this.getValueInDirection(x, y, Direction.BottomRight, 1);
+    }
+
+    public List<Position> findPositions(String content) {
+        List<Position> positions = new ArrayList<>();
+        for (int y = 1; y <= this.getHeight(); y++) {
+            for (int x = 1; x <= this.getWidth(); x++) {
+                if (content.equals(this.get(x, y))) positions.add(new Position(x,y));
+            }
+        }
+        return positions;
     }
 
 }
