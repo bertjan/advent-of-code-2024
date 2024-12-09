@@ -12,6 +12,7 @@ void main() throws Exception {
         part2.addAll(findAntiNodes(matrix.getCopy(), freq, true));
     }
     println(part1.size() + " " + part2.size());
+    println("265 962");
 }
 
 Set<Position> findAntiNodes(Matrix matrix, String freq, boolean includeAll) {
