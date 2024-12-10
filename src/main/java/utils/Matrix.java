@@ -9,8 +9,26 @@ public class Matrix {
 
     public record Position(int x, int y) {};
 
+    public record Item(int x, int y, String value, List<Position> history) {}
+
+    public record Offset(int x, int y) {}
+
     public enum Direction {
         TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left
+    }
+
+    public static final List<Direction> squareDirections = List.of(Direction.Top, Direction.Right, Direction.Bottom, Direction.Left);
+
+    public Offset getOffsetFor(Direction direction) {
+        int x = 0, y = 0;
+        switch (direction) {
+            case Top: x = 0; y = 1; break;
+            case Right: x = 1; y = 0; break;
+            case Bottom: x = 0; y = -1; break;
+            case Left: x = -1; y = 0; break;
+            default: break;
+        }
+        return new Offset(x, y);
     }
 
     public Matrix getCopy() {
@@ -97,6 +115,10 @@ public class Matrix {
 
     public int getHeight() {
         return matrix[0].length;
+    }
+
+    public String getValueInDirection(int x, int y, Direction direction) {
+        return getValueInDirection(x, y, direction, 1);
     }
 
     public String getValueInDirection(int x, int y, Direction direction, int steps) {
