@@ -7,8 +7,6 @@ import java.util.stream.IntStream;
 
 public class Matrix {
 
-    public record Position(int x, int y) {};
-
     public record Item(int x, int y, String value, List<Position> history) {}
 
     public record Offset(int x, int y) {}
@@ -63,14 +61,14 @@ public class Matrix {
         return matrix;
     }
 
-    public void addMatrixRow() {
-        var newMatrix = new Matrix(getWidth(), getHeight() + 1);
-        for (int x = 1; x <= getWidth(); x++) {
-            for (int y = 1; y <= getHeight(); y++) {
-                newMatrix.put(x, y, get(x, y));
-        }}
-        matrix = newMatrix.matrix;
-    }
+//    public void addMatrixRow() {
+//        var newMatrix = new Matrix(getWidth(), getHeight() + 1);
+//        for (int x = 1; x <= getWidth(); x++) {
+//            for (int y = 1; y <= getHeight(); y++) {
+//                newMatrix.put(x, y, get(x, y));
+//        }}
+//        matrix = newMatrix.matrix;
+//    }
 
     public boolean isEmptyRow(int y) {
         return IntStream.range(1, getWidth() + 1).allMatch(x -> " ".equals(get(x, y)));
@@ -84,11 +82,35 @@ public class Matrix {
         System.out.println("\nMatrix:");
         for (int y = getHeight(); y > 0; y--) {
             var yPos = y;
-            if (!isEmptyRow(y)) {
+//            if (!isEmptyRow(y)) {
                 System.out.println(IntStream.range(1, getWidth() + 1)
                         .mapToObj(x -> get(x, yPos))
                         .collect(Collectors.joining()));
-    }}}
+    }}
+
+    public void printReverse() {
+        System.out.println("\nMatrix:");
+        for (int y = 1; y < getHeight()+1; y++) {
+            var yPos = y;
+//            if (!isEmptyRow(y)) {
+                System.out.println(IntStream.range(1, getWidth() + 1)
+                        .mapToObj(x -> get(x, yPos))
+                        .collect(Collectors.joining()));
+            }}
+
+
+
+    public List<String> printToLines() {
+        List<String> lines = new ArrayList<>();
+        for (int y = getHeight(); y > 0; y--) {
+            var yPos = y;
+            if (!isEmptyRow(y)) {
+                lines.add(IntStream.range(1, getWidth() + 1)
+                        .mapToObj(x -> get(x, yPos))
+                        .collect(Collectors.joining()));
+            }}
+        return lines;
+    }
 
 
     public void move(int fromX, int fromY, int toX, int toY) {
@@ -101,7 +123,7 @@ public class Matrix {
     }
 
     public void put(int x, int y, String value) {
-        while (y > getHeight()) addMatrixRow();
+//        while (y > getHeight()) addMatrixRow();
         matrix[x - 1][y - 1] = value;
     }
 
@@ -158,6 +180,42 @@ public class Matrix {
             }
         }
         return positions;
+    }
+
+    public static class Position {
+        public void set(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
+        }
+
+        private int x,y;
+
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+    }
+
+    public void fill(String character) {
+        for (int x = 1; x <= this.getWidth(); x++)
+            for (int y = 1; y <= this.getHeight(); y++)
+                this.put(x, y, character);
     }
 
 }
