@@ -20,7 +20,6 @@ void main() throws Exception {
         result1 += (items.size()*fences);
     }
     System.out.println(result1);
-    println("1374934");
 
     // Gave up on part 2 ...
 }
