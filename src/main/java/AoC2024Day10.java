@@ -20,7 +20,7 @@ private List<Item> findNext(Matrix matrix, Item curPos) {
         long nextVal = Long.valueOf(matrix.getValueInDirection(curPos.x(), curPos.y(), dir));
         if (nextVal == Long.valueOf(curPos.value()) + 1) {
             curPos.history().add(new Position(curPos.x(), curPos.y()));
-            Offset offset = matrix.getOffsetFor(dir);
+            Offset offset = Position.offsetFor(dir);
             nextItems.add(new Item(curPos.x() + offset.x(), curPos.y() + offset.y(), ""+nextVal, curPos.history()));
     }} catch (Exception ignored) {}
     return nextItems;

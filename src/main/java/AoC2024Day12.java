@@ -3,6 +3,8 @@ import utils.Matrix.Direction;
 import utils.Matrix.Item;
 import utils.Matrix.Offset;
 
+import static utils.Matrix.Position.*;
+
 void main() throws Exception {
     var matrix = Matrix.fromLines(Files.readAllLines(Path.of("day12/input.txt")));
     long result1 = 0;
@@ -27,7 +29,7 @@ void processItems(Matrix matrix, Set<Item> itemsAround, Item item) {
     for (Direction dir: Matrix.squareDirections) try {
             String valToCheck = matrix.getValueInDirection(item.x(), item.y(), dir);
             if (item.value().equals(valToCheck)) {
-                Offset offset = matrix.getOffsetFor(dir);
+                Offset offset = offsetFor(dir);
                 Item newItem = new Item(item.x()+offset.x(), item.y()+ offset.y(), valToCheck, null);
                 if (itemsAround.add(newItem)) processItems(matrix, itemsAround, newItem);
     }} catch (Exception ignored) {}

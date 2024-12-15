@@ -17,18 +17,6 @@ public class Matrix {
 
     public static final List<Direction> squareDirections = List.of(Direction.Top, Direction.Right, Direction.Bottom, Direction.Left);
 
-    public Offset getOffsetFor(Direction direction) {
-        int x = 0, y = 0;
-        switch (direction) {
-            case Top: x = 0; y = 1; break;
-            case Right: x = 1; y = 0; break;
-            case Bottom: x = 0; y = -1; break;
-            case Left: x = -1; y = 0; break;
-            default: break;
-        }
-        return new Offset(x, y);
-    }
-
     public Matrix getCopy() {
         String[][] newMatrix = new String[getWidth()][getHeight()];
         for (int x = 0; x < getWidth(); x++) {
@@ -210,6 +198,28 @@ public class Matrix {
             this.y = y;
         }
 
+        public String toString() {
+            return "(" + x + "," + y + ")";
+        }
+
+        public Position withOffset(Direction direction) {
+            return new Position(this.x() + offsetFor(direction).x(), this.y() + offsetFor(direction).y());
+        }
+
+        public static Offset offsetFor(Direction direction) {
+            int x = 0, y = 0;
+            switch (direction) {
+                case Top: x = 0; y = 1; break;
+                case Right: x = 1; y = 0; break;
+                case Bottom: x = 0; y = -1; break;
+                case Left: x = -1; y = 0; break;
+                default: break;
+            }
+            return new Offset(x, y);
+        }
+
+
+
     }
 
     public void fill(String character) {
@@ -217,5 +227,14 @@ public class Matrix {
             for (int y = 1; y <= this.getHeight(); y++)
                 this.put(x, y, character);
     }
+
+
+    public Position findFirst(String value) {
+        for (int y = 1; y <= this.getHeight(); y++) for (int x = 1; x <= this.getWidth(); x++)
+            if (value.equals(this.get(x,y))) { return new Position(x, y); }
+        return null;
+    }
+
+
 
 }
